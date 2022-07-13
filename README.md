@@ -1,5 +1,5 @@
 # Utility-Bill-Automation
-A Python script that allows users to automate the boring parts within a city's utility bill payment website. 
+A Python script that allows users to automate the boring parts within a Savannah GA's utility bill payment website. 
 
 
 ## Project Dependencies
