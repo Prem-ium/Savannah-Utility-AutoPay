@@ -17,4 +17,6 @@ Addionally, you may be able to git clone this repository and
 Be aware your browser driver MUST be within your directory. 
 
 ## USE AT YOUR OWN RISK
-It is highly recommended to have HandlePayment and FullyAutomated turned OFF. In this case, you would need to manually input payment details and leave the boring stuff like filling out account number, barcode, payor phone number, name, address, etc to the bot. This script can be used to pay off multiple utility accounts, if needed. 
+It is highly recommended to have HandlePayment and FullyAutomated turned OFF. In this case, you would need to manually input payment details and leave the boring stuff like filling out account number, barcode, payor phone number, name, address, etc to the bot. 
+
+This script can be used to pay off multiple utility accounts, if needed. 
