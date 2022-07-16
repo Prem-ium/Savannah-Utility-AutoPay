@@ -71,21 +71,20 @@ def automate(account, barcode):
     if (driver.find_elements(By.XPATH, value ='//*[@id="objWP_epayment_ESearchManager1_vdsSummary"]/ul/li')):
         driver.execute_script('alert(\'Barcode is incorrect. Exiting...\');')
         print('Incorrect barcode provided. Exiting...')
-        time.sleep(15)
+        time.sleep(10)
         return
     elif (driver.find_elements(By.XPATH, value ='//*[@id="objWP_epayment_ESearchManager1_Web_CO_SearchPanel1_lblNoResult"]')):
         driver.execute_script('alert(\'No results found, please check account number and barcode are correct & run again upon account number/barcode correction. Exiting...\');')
         print('No results found, please check account number and barcode are correct. Exiting...')
         time.sleep(15)
         return
-    else:
-        print('Account number and barcode are correct.')
+    print('Account number and barcode are correct.')
     driver.find_element(By.XPATH, value ='/html/body/form/table/tbody/tr[2]/td[2]/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[3]/td/table/tbody/tr[5]/td/input[2]').click()
     try:
         if (driver.find_element(By.XPATH, value ='//*[@id="ctl02_grdAmount_ctl01_lblEmptyGrid"]').get_attribute('innerHTML') == 'No Outstanding Balance Found.'):
             driver.execute_script('alert(\'No outstanding balance found. Exiting...\');')
             print('No outstanding balance found. Exiting...')
-            time.sleep(15)
+            time.sleep(10)
             return
     except NoSuchElementException:
         print('An outstanding balance exists... Continuing...')
@@ -131,7 +130,6 @@ def automate(account, barcode):
     else:
         driver.execute_script("alert('Fully Automated variable is set to False. You must manually submit your payment. You have 5 minutes before the browser closes.');")
         time.sleep(300)
-    print('\n\n')
 
 # Main Program
 def main():
@@ -140,14 +138,15 @@ def main():
         for account in ACCOUNTS:
             print(f'Now running for account: {account} and barcode: {BARCODES[i]}')
             automate(account, BARCODES[i])
-            time.sleep(5)
+            time.sleep(2)
             i+=1
+            print()
     except Exception as e:
         print(e)
-        driver.execute_script("alert('Error occurred. Browser closes in 10 minutes.');")
-        time.sleep(600)
+        driver.execute_script("alert('Error occurred. Browser closes in 5 minutes.');")
+        time.sleep(300)
         return
 
 if __name__ == '__main__':
     main()
-    time.sleep(5)
+    time.sleep(3)
