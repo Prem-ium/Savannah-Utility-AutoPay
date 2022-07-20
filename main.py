@@ -55,13 +55,7 @@ def payWithBank(driver):
     driver.find_element(By.XPATH, value='//*[@id="ddAccountNumber"]').send_keys(secrets.bank['Account'])
     driver.find_element(By.XPATH, value='//*[@id="ddAccountNumber2"]').send_keys(secrets.bank['Account'])
 
-def automate(account, barcode):
-    # URL of the bill website to be scraped
-    url = 'https://revenue.savannahga.gov/revwebpayub/default.aspx'
-
-    driver = webdriver.Chrome()
-    driver.get(url)
-
+def automate(driver, account, barcode):
     # Barcode/Account Number Page
     driver.find_element(By.ID, value ='objWP_epayment_ESearchManager1_Web_CO_SearchPanel1_txt_GFD0').send_keys(account)
     driver.find_element(By.ID, value ='objWP_epayment_ESearchManager1_Web_CO_SearchPanel1_txt_GFD1').send_keys(barcode)
@@ -133,11 +127,15 @@ def automate(account, barcode):
 
 # Main Program
 def main():
+    # URL of the bill website to be scraped
+    url = 'https://revenue.savannahga.gov/revwebpayub/default.aspx'
+    driver = webdriver.Chrome()
     try:
         i = 0
         for account in ACCOUNTS:
             print(f'Now running for account: {account} and barcode: {BARCODES[i]}')
-            automate(account, BARCODES[i])
+            driver.get(url)
+            automate(driver, account, BARCODES[i])
             time.sleep(2)
             i+=1
             print()
