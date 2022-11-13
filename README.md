@@ -10,7 +10,7 @@ A Python script that allows users to automate the boring parts within a Savannah
 ```
 Addionally, you may be able to git clone this repository and 
 ```pip
-  git clone https://github.com/sazncode/Utility-Bill-Automation.git
+  git clone https://github.com/Prem-ium/Utility-Bill-Automation.git
   pip install -r requirements.txt
 ```
 
