@@ -43,16 +43,11 @@ else:
 HANDLE_PAYMENT = True if os.environ.get('HANDLE_PAYMENT', 'False').lower() == 'true' else False
 
 if HANDLE_PAYMENT:
-    PAYMENT_METHOD = os.environ.get('PAYMENT_METHOD').lower()
-    if PAYMENT_METHOD == 'bank':
-        BANK = os.environ.get('BANK')
-        BANK = json.loads(BANK)
-    elif PAYMENT_METHOD == 'credit':
-        CC_CARD = os.environ.get('CREDIT_CARD')
-        CC_CARD = json.loads(CC_CARD)
-    elif PAYMENT_METHOD == 'debit':
-        DB_CARD = os.environ.get('DEBIT_CARD')
-        DB_CARD = json.loads(DB_CARD)
+    PAYMENT_METHOD = os.environ.get('PAYMENT_METHOD').split(',')
+    if len(PAYMENT_METHOD) != len(ACCOUNTS):
+        raise Exception("PAYMENT_METHOD and ACCOUNT_NUMBERS are not the same length. Please make sure they are and try again.")
+    BANK, CC_CARD, DB_CARD = None, None, None
+
 
 FULLY_AUTOMATED = True if os.environ.get('FULLY_AUTOMATED', 'False').lower() == 'true' else False
 
@@ -67,6 +62,19 @@ def getDriver():
     except:
         driver = webdriver.Chrome()
     return driver
+
+def update_payment(index):
+    name = PAYMENT_METHOD[index].split(':')[1]
+    if 'bank' in PAYMENT_METHOD[index]:
+        BANK = os.environ.get(name)
+        BANK = json.loads(BANK)
+    elif 'credit' in PAYMENT_METHOD[index]:
+        CC_CARD = os.environ.get(name)
+        CC_CARD = json.loads(CC_CARD)
+    elif 'debit' in PAYMENT_METHOD[index]:
+        DB_CARD = os.environ.get(name)
+        DB_CARD = json.loads(DB_CARD)
+    return f'\t{name} being used for payment.'
 
 # Payment Method Functions
 def payWithCreditCard(driver):
@@ -201,7 +209,9 @@ def main():
     try:
         i = 0
         for account in ACCOUNTS:
-            print(f'Starting:\n\tAccount: {account}\n\tBarcode: {BARCODES[i]}\n\tPayment Method: {PAYMENT_METHOD}\n\n')
+            print(f'Starting:\n\tAccount: {account}\n\tBarcode: {BARCODES[i]}\n\n')
+            if HANDLE_PAYMENT:
+                print(f'{update_payment(i)}\n\n')
             automate(account, BARCODES[i])
             sleep(2)
             i+=1
