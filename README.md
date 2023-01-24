@@ -36,6 +36,8 @@ To run this project, you will need to add the following environment variables to
 
 - `FULLY_AUTOMATED`: A boolean value indicating whether the application should run in fully automated mode or not.
 
+- `MULTI_THREADING` : A boolean value indicating whether the application should run with multithreading or not.
+
 - `PAYMENT_METHOD`: A string indicating the payment method to be used. It can take values `bank`, `credit`, `debit`.
 
 - `BANK`: A JSON string containing the bank information, including bank type, routing number, account number, bank name, and account holder name.
