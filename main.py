@@ -3,26 +3,22 @@
 
 # USE handlePayment AND fullyAutomated AT YOUR OWN RISK.
 # If you are insistent on using either, I HIGHLY RECOMMEND YOU USE A VIRTUAL DEBIT CARD OR A PRIVACY.COM (https://privacy.com/join/G25UX) TEMPORARY CARD.
-import os
-import json
-import threading
+import os, json,  threading
 
-from time import sleep
-from dotenv import load_dotenv
-from lib2to3.pgen2 import driver
+from time                                       import sleep
+from dotenv                                     import load_dotenv
+from lib2to3.pgen2                              import driver
 
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    UnexpectedAlertPresentException
-)
+from webdriver_manager.chrome                   import ChromeDriverManager
+from selenium.webdriver.chrome.service          import Service
+from selenium                                   import webdriver
+from selenium.webdriver.common.by               import By
+from selenium.webdriver.support.ui              import Select
+from selenium.webdriver.support                 import expected_conditions as EC
+from selenium.webdriver.common.keys             import Keys
+from selenium.webdriver.common.action_chains    import ActionChains
+from selenium.common.exceptions                 import (NoSuchElementException)
+
 
 load_dotenv()
 
@@ -108,17 +104,16 @@ def payWithBank(driver, BANK):
     sleep(2)
     try:
         if (BANK['Type'] == 'Checking'):
-            driver.find_element(By.XPATH, value ='//*[@id="hide-radio-pm-dd-1"]/div/div[2]/div/fieldset/div/label/span').click()
+            driver.find_element(By.XPATH, value = "//button[contains(.,'Checking')]").click()
         elif (BANK['Type'] == 'Savings'):
-            driver.find_element(By.XPATH, value ='//*[@id="hide-radio-pm-dd-1"]/div/div[2]/div/fieldset/div[2]/label/span').click()
+            driver.find_element(By.XPATH, value = "//button[contains(.,'Savings')]").click()
     except:
         try:
             if (BANK['Type'] == 'Checking'):
-                driver.find_element(By.XPATH, value = "//button[contains(.,'Checking')]").click()
+                driver.find_element(By.XPATH, value ='//*[@id="hide-radio-pm-dd-1"]/div/div[2]/div/fieldset/div/label/span').click()
             elif (BANK['Type'] == 'Savings'):
-                driver.find_element(By.XPATH, value = "//button[contains(.,'Savings')]").click()
-        except:
-            pass
+                driver.find_element(By.XPATH, value ='//*[@id="hide-radio-pm-dd-1"]/div/div[2]/div/fieldset/div[2]/label/span').click()
+        except:  pass
     driver.find_element(By.XPATH, value ='//*[@id="ddBankName"]').send_keys(BANK['Banker'])
     driver.find_element(By.XPATH, value ='//*[@id="ddAccountHolderName"]').send_keys(BANK['Holder'])
     try:
