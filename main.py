@@ -3,7 +3,7 @@
 
 # USE handlePayment AND fullyAutomated AT YOUR OWN RISK.
 # If you are insistent on using either, I HIGHLY RECOMMEND YOU USE A VIRTUAL DEBIT CARD OR A PRIVACY.COM (https://privacy.com/join/G25UX) TEMPORARY CARD.
-import os, json,  threading
+import os, json, traceback, threading
 
 from time                                       import sleep
 from dotenv                                     import load_dotenv
@@ -49,7 +49,7 @@ MULTI_THREADING = True if os.environ.get('MULTI_THREADING', 'False').lower() == 
 
 FULLY_AUTOMATED = True if os.environ.get('FULLY_AUTOMATED', 'False').lower() == 'true' else False
 
-def getDriver():
+def get_driver():
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_argument("--start-minimized")
@@ -80,7 +80,7 @@ def update_payment(index):
         return CUR_METH, DB_CARD
 
 # Payment Method Functions
-def payWithCreditCard(driver, CC_CARD):
+def pay_with_credit(driver, CC_CARD):
     driver.find_element(By.XPATH, value ='//*[@id="category-CC"]/div[1]/div/label/span').click()
     sleep(2)
     driver.find_element(By.XPATH, value ='//*[@id="ccAccountNumber"]').send_keys(CC_CARD['number'])
@@ -89,7 +89,7 @@ def payWithCreditCard(driver, CC_CARD):
     Select(driver.find_element(By.ID, value='ccExpiryDateYear')).select_by_value(CC_CARD['expirationYear'])
     driver.find_element(By.XPATH, value ='//*[@id="ccCardHolderName"]').send_keys(CC_CARD['cardholder'])
 
-def payWithDebitCard(driver, DB_CARD):
+def pay_with_debit(driver, DB_CARD):
     driver.find_element(By.XPATH, value ='//*[@id="category-DC"]/div[1]/div/label/span').click()
     sleep(2)
     driver.find_element(By.ID, value ='dcAccountNumber').send_keys(DB_CARD['number'])
@@ -98,7 +98,7 @@ def payWithDebitCard(driver, DB_CARD):
     Select(driver.find_element(By.ID, value='dcExpiryDateYear')).select_by_value(DB_CARD['expirationYear'])
     driver.find_element(By.ID, value ='dcCardHolderName').send_keys(DB_CARD['cardholder'])
 
-def payWithBank(driver, BANK):
+def pay_with_bank(driver, BANK):
     # Bank Account 
     driver.find_element(By.XPATH, value ='//*[@id="category-DD"]/div[1]/div/label/span').click()
     sleep(2)
@@ -114,20 +114,20 @@ def payWithBank(driver, BANK):
             elif (BANK['Type'] == 'Savings'):
                 driver.find_element(By.XPATH, value ='//*[@id="hide-radio-pm-dd-1"]/div/div[2]/div/fieldset/div[2]/label/span').click()
         except:  pass
+
     driver.find_element(By.XPATH, value ='//*[@id="ddBankName"]').send_keys(BANK['Banker'])
     driver.find_element(By.XPATH, value ='//*[@id="ddAccountHolderName"]').send_keys(BANK['Holder'])
+
     try:
         driver.find_element(By.XPATH, value ='/html/body/div[6]/div[1]/form/div[2]/div[1]/div[5]/fieldset/div[3]/div[2]/div/div[3]/div[1]/input').send_keys(BANK['Routing'])
     except:
-        try:
-            sleep(5)
-            driver.find_element(By.XPATH, value = '//*[@id="ddRoutingNumber"]').send_keys(BANK['Routing'])
-        except:
-            pass
+        sleep(5)
+        driver.find_element(By.XPATH, value = '//*[@id="ddRoutingNumber"]').send_keys(BANK['Routing'])
+
     driver.find_element(By.XPATH, value='//*[@id="ddAccountNumber"]').send_keys(BANK['Account'])
     driver.find_element(By.XPATH, value='//*[@id="ddAccountNumber2"]').send_keys(BANK['Account'])
 
-def automate(account, barcode, index):
+def automate_bill(account, barcode, index):
     if HANDLE_PAYMENT:
         CUR_METHOD = update_payment(index)
 
@@ -142,7 +142,7 @@ def automate(account, barcode, index):
     url = 'https://revenue.savannahga.gov/revwebpayub/default.aspx'
     if HANDLE_PAYMENT:
         print(f'Account: {account} Barcode: {barcode} CUR_METH: {CUR_METHOD[0]}\n\n')
-    driver = getDriver()
+    driver = get_driver()
     driver.get(url)
 
     # Barcode/Account Number Page
@@ -176,6 +176,11 @@ def automate(account, barcode, index):
         print('An outstanding balance exists... Continuing...')
     sleep(3)
 
+    try:
+        amount = driver.find_element(By.XPATH, value ='/html/body/form/table/tbody/tr[2]/td[2]/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr[4]/td[2]/div/table/tbody/tr[2]/td[2]/div/table/tbody/tr[3]/td[2]/table/tbody/tr/td/span').text
+        print(f'\n------------------------\nAccount:\t{account}\tBarcode:\t{barcode}\nAmount due:\t{amount}\n------------------------\n')
+    except: pass
+
     # Next Step Page
     driver.find_element(By.XPATH, value='//*[@id="ctl02_hlinkNextStep"]').click()
     driver.find_element(By.XPATH, value='//*[@id="ctl02_hlinkNextStep"]').click()
@@ -198,15 +203,16 @@ def automate(account, barcode, index):
     driver.find_element(By.XPATH, value ='//*[@id="customer.dayPhone.formattedText"]').send_keys(PAYOR_INFO['Phone'])
     if HANDLE_PAYMENT == True:
         if (CUR_METHOD == 'bank'):
-            payWithBank(driver, BANK)
+            pay_with_bank(driver, BANK)
         elif (CUR_METHOD == 'credit'):
-            payWithCreditCard(driver, CC_CARD)
+            pay_with_credit(driver, CC_CARD)
         elif (CUR_METHOD == 'debit'):
-            payWithDebitCard(driver, DB_CARD)
+            pay_with_debit(driver, DB_CARD)
     else:
         driver.execute_script("alert('Payment must be manually entered from this point. Handle Payment variable is False. Browser closes in 10 minutes.');")
         sleep(600)
         return
+    
     sleep(2)
     # Submit 
     driver.find_element(By.XPATH, value ='//*[@id="main-container"]/form/div[2]/div[2]/div/input[1]').click()
@@ -221,14 +227,13 @@ def automate(account, barcode, index):
         driver.execute_script("alert('Fully Automated variable is set to False. You must manually submit your payment. You have 5 minutes before the browser closes.');")
         sleep(300)
 
-def multi_automate():
+def multithread():
     threads = []
     for i in range(len(ACCOUNTS)):
         if HANDLE_PAYMENT:
-            print('Handle Payment is experimental, when paired with multi-threading.')
-            threads.append(threading.Thread(target=automate, args=(ACCOUNTS[i], BARCODES[i], i)))
+            threads.append(threading.Thread(target=automate_bill, args=(ACCOUNTS[i], BARCODES[i], i)))
         else:
-            threads.append(threading.Thread(target=automate, args=(ACCOUNTS[i], BARCODES[i])))
+            threads.append(threading.Thread(target=automate_bill, args=(ACCOUNTS[i], BARCODES[i])))
     # Start all threads
     for thread in threads:
         thread.start()
@@ -238,25 +243,26 @@ def multi_automate():
 
 # Main Program
 def main():
-    print(f'Handle Payment: {HANDLE_PAYMENT}\nFully Automated: {FULLY_AUTOMATED}\nMulti-Threading: {MULTI_THREADING}\n\n')
+    print(f'Handle Payment:\t{HANDLE_PAYMENT}\t|\tFully Automated:\t{FULLY_AUTOMATED}\t|\tMulti-Threading:\t{MULTI_THREADING}\n\n')
     try:
         if MULTI_THREADING:
-            multi_automate()
+            multithread()
         else:
             i = 0
             for account in ACCOUNTS:
-                print(f'Starting:\n\tAccount: {account}\n\tBarcode: {BARCODES[i]}\n\n')
-                automate(account, BARCODES[i], i)
+                print(f'------------------------\nStarting:\n\tAccount: {account}\n\tBarcode: {BARCODES[i]}\n\n------------------------\n')
+                automate_bill(account, BARCODES[i], i)
                 sleep(2)
                 i+=1
                 print()
-    except Exception as e:
-        print(e)
+    except Exception:
+        print(traceback.format_exc())
         driver.execute_script("alert('Error occurred. Browser closes in 5 minutes.');")
         sleep(300)
         return
 
 if __name__ == '__main__':
     main()
+    print('Script finished successfully.')
     sleep(3)
     

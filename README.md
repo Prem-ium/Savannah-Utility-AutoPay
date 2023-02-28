@@ -1,8 +1,7 @@
 
 # Savannah GA Utility Bill AutoPay
 
-A selenium python script to automate the utility bill payment for residents of Savannah GA.
-
+A Selenium Python script to automate utility bill payments for propety owners of Savannah, GA.
 
 ## Installation
 
@@ -53,12 +52,13 @@ It is important to note that these variables should be replaced with real values
 
 #### Who is this repository applicable for?
 
-Any person(s) within the Savannah, Georgia area which is responsible for paying utility bills. Ideally, landlords and business owners can rapidly pay for different location(s).
+This repository is applicable to any person(s) within the Savannah, Georgia area who is responsible for paying utility bills. Ideally, landlords and business owners can rapidly pay for different locations.
+
 
 #### Why did you create this script?
 
-I despise Savannah GA GOV Utility Bill process. Manually having to type the same information multiple times for three seperate bills became exhausting, so I decided to automate it.
+I loathed the Savannah GA GOV Utility Bill payment website. Manually having to type the same information multiple times for three seperate propety utility bills became exhausting, so I decided to automate it using a script.
 
 #### WARNING:
 Storing sensitive financial information such as debit/credit card or bank credentials is highly discouraged. If you must store financial information, it is recommended that you use caution and proceed at your own risk. The developer(s) of this program are not responsible for any financial loss incurred that may occur as a result of storing financial information in this program. Use at your own risk. 
-[Use Privacy.com to get Virtual Cards to protect yourself.](https://privacy.com/join/G25UX)
+[Use Privacy.com to get Virtual Cards to protect yourself and ensure you aren't overcharged.](https://privacy.com/join/G25UX)
