@@ -99,8 +99,10 @@ def pay_with_debit(driver, DB_CARD):
     driver.find_element(By.ID, value ='dcCardHolderName').send_keys(DB_CARD['cardholder'])
 
 def pay_with_bank(driver, BANK):
-    # Bank Account 
-    driver.find_element(By.XPATH, value ='//*[@id="category-DD"]/div[1]/div/label/span').click()
+    try:
+        driver.find_element(By.XPATH, value ='/html/body/div[6]/div[1]/form/div[2]/div[2]/div[6]/fieldset/div[3]/div[1]/div/label/span').click()
+    except:
+        driver.find_element(By.XPATH, value ='//*[@id="category-DD"]/div[1]/div/label/span').click()
     sleep(2)
     try:
         if (BANK['Type'] == 'Checking'):
@@ -130,7 +132,7 @@ def pay_with_bank(driver, BANK):
 def automate_bill(account, barcode, index):
     if HANDLE_PAYMENT:
         CUR_METHOD = update_payment(index)
-
+        print(f'CUR_METHOD: {CUR_METHOD[0]}')
         if (CUR_METHOD[0] == 'bank'):
             BANK = CUR_METHOD[1]
         elif (CUR_METHOD[0] == 'credit'):
@@ -202,11 +204,11 @@ def automate_bill(account, barcode, index):
     #Payment Page
     driver.find_element(By.XPATH, value ='//*[@id="customer.dayPhone.formattedText"]').send_keys(PAYOR_INFO['Phone'])
     if HANDLE_PAYMENT == True:
-        if (CUR_METHOD == 'bank'):
+        if (CUR_METHOD[0] == 'bank'):
             pay_with_bank(driver, BANK)
-        elif (CUR_METHOD == 'credit'):
+        elif (CUR_METHOD[0] == 'credit'):
             pay_with_credit(driver, CC_CARD)
-        elif (CUR_METHOD == 'debit'):
+        elif (CUR_METHOD[0] == 'debit'):
             pay_with_debit(driver, DB_CARD)
     else:
         driver.execute_script("alert('Payment must be manually entered from this point. Handle Payment variable is False. Browser closes in 10 minutes.');")
@@ -224,7 +226,7 @@ def automate_bill(account, barcode, index):
         # FINAL SUBMIT BUTTON!!!
         driver.find_element(By.XPATH, value ='//*[@id="make-payment-btn"]').click()
     else:
-        driver.execute_script("alert('Fully Automated variable is set to False. You must manually submit your payment. You have 5 minutes before the browser closes.');")
+        driver.execute_script(f"alert('{account}:{PAYMENT_METHOD[index].split(':')[1]} Fully Automated variable is set to False. You must manually submit your payment. You have 5 minutes before the browser closes.');")
         sleep(300)
 
 def multithread():
