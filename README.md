@@ -23,27 +23,25 @@ To run this project, you will need to add the following environment variables to
 
 #### Required Enviornmental Variables: 
 
-- `ACCOUNT_NUMBERS`: A comma-separated string of account numbers. These are used to identify the accounts that the application will interact with.
+| Variable         | Description                                                       | Type    |
+|------------------|-------------------------------------------------------------------|---------|
+| `ACCOUNT_NUMBERS`| Comma-separated string of account numbers                          | String  |
+| `BARCODES`       | Comma-separated string of barcodes                                 | String  |
+| `PAYOR_INFO`     | JSON string containing payor's information                        | JSON    |
 
-- `BARCODES`: A comma-separated string of barcodes. These are used to identify the barcodes that the application will interact with.
-
-- `PAYOR_INFO`: A JSON string containing the payor's information, including first and last name, address, email, and phone number.
 
 #### Optional Enviornmental Variables: 
 
-- `HANDLE_PAYMENT`: A boolean value indicating whether the application should handle payments or not.
+| Variable         | Description                                                        | Type    | Default |
+|------------------|--------------------------------------------------------------------|---------|---------|
+| `HANDLE_PAYMENT` | A boolean value indicating whether the application handles payments | Boolean | True    |
+| `FULLY_AUTOMATED`| A boolean value indicating fully automated mode                    | Boolean | False   |
+| `MULTI_THREADING`| A boolean value indicating multithreading usage                     | Boolean | True    |
+| `PAYMENT_METHOD` | String indicating payment method (bank, credit, debit)              | String  | bank    |
+| `BANK`           | JSON string containing bank information                             | JSON    |         |
+| `CREDIT_CARD`    | JSON string containing credit card information                     | JSON    |         |
+| `DEBIT_CARD`     | JSON string containing debit card information                      | JSON    |         |
 
-- `FULLY_AUTOMATED`: A boolean value indicating whether the application should run in fully automated mode or not.
-
-- `MULTI_THREADING` : A boolean value indicating whether the application should run with multithreading or not.
-
-- `PAYMENT_METHOD`: A string indicating the payment method to be used. It can take values `bank`, `credit`, `debit`.
-
-- `BANK`: A JSON string containing the bank information, including bank type, routing number, account number, bank name, and account holder name.
-
-- `CREDIT_CARD`: A JSON string containing the credit card information, including the card number, expiration date, CCV, and cardholder name.
-
-- `DEBIT_CARD`: A JSON string containing the debit card information, including the card number, expiration date, CCV, and cardholder name.
 
 It is important to note that these variables should be replaced with real values before the application is run in order for it to function properly.
 
