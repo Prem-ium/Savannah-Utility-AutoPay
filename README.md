@@ -79,7 +79,7 @@ I created this script because I was frustrated with the Savannah GA GOV Utility 
 
 ## License
 
-This project operates under the [MT](https://choosealicense.com/licenses/mit/) license.
+This project operates under the [MIT](https://github.com/Prem-ium/Savannah-Utility-AutoPay/blob/main/LICENSE.MD) license.
 
 ## Disclaimer:
 Please be careful when storing financial information such as card or bank details in this program. Storing this information in your `.env` is not always secure and could expose you to fraud or theft. We do not recommend storing permanently any sensitive financial information in this program. If you choose to do so, you are solely responsible for any financial loss that may happen. Use at your own risk. It is **highly recommended** you use Privacy to create virtual cards if you chose to leave your info permanently.
