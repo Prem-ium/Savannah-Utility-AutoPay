@@ -1,8 +1,13 @@
-# Automated by Prem-ium (Prem) 
-# Python Automation Application
+# USE "handlePayment" AND "fullyAutomated" AT YOUR OWN RISK.
+# I highly recommend using Privacy virtual cards as payment formats to avoid complications. 
+# Sign up using (https://privacy.com/join/G25UX) link to help yourself stay secure, and you will receive $5 after making a purchase. 
 
-# USE handlePayment AND fullyAutomated AT YOUR OWN RISK.
-# If you are insistent on using either, I HIGHLY RECOMMEND YOU USE A VIRTUAL DEBIT CARD OR A PRIVACY.COM (https://privacy.com/join/G25UX) TEMPORARY CARD.
+# MIT License
+# Copyright (c) 2023 Prem-ium
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+#The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 import os, json, traceback, threading
 
 from time                                       import sleep
