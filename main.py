@@ -68,20 +68,20 @@ def get_driver():
 def update_payment(index):
     name = PAYMENT_METHOD[index].split(':')[1]
     if 'bank' in PAYMENT_METHOD[index]:
-        BANK = os.environ.get(name)
-        BANK = json.loads(BANK)
-        CUR_METH = "bank"
-        return CUR_METH, BANK
+        bank_info = os.environ.get(name)
+        bank_info = json.loads(bank_info)
+        payment_method = "bank"
+        return payment_method, bank_info
     elif 'credit' in PAYMENT_METHOD[index]:
-        CC_CARD = os.environ.get(name)
-        CC_CARD = json.loads(CC_CARD)
-        CUR_METH = "credit"
-        return CUR_METH, CC_CARD
+        cc_info = os.environ.get(name)
+        cc_info = json.loads(cc_info)
+        payment_method = "credit"
+        return payment_method, cc_info
     elif 'debit' in PAYMENT_METHOD[index]:
-        DB_CARD = os.environ.get(name)
-        DB_CARD = json.loads(DB_CARD)
-        CUR_METH = "debit"
-        return CUR_METH, DB_CARD
+        db_info = os.environ.get(name)
+        db_info = json.loads(db_info)
+        payment_method = "debit"
+        return payment_method, db_info
 
 # Payment Method Functions
 def pay_with_credit(driver, CC_CARD):
@@ -93,7 +93,6 @@ def pay_with_credit(driver, CC_CARD):
     Select(driver.find_element(By.ID, value='ccExpiryDateYear')).select_by_value(CC_CARD['expirationYear'])
     driver.find_element(By.XPATH, value ='//*[@id="ccCardHolderName"]').send_keys(CC_CARD['cardholder'])
 
-# Pay with debit card
 def pay_with_debit(driver, DB_CARD):
     driver.find_element(By.XPATH, value ='//*[@id="category-DC"]/div[1]/div/label/span').click()
     sleep(2)
@@ -132,100 +131,112 @@ def pay_with_bank(driver, BANK):
 
 def automate_bill(account, barcode, index):
     if HANDLE_PAYMENT:
-        CUR_METHOD = update_payment(index)
-        if (CUR_METHOD[0] == 'bank'):
-            BANK = CUR_METHOD[1]
-        elif (CUR_METHOD[0] == 'credit'):
-            CC_CARD = CUR_METHOD[1]
-        elif (CUR_METHOD[0] == 'debit'):
-            DB_CARD = CUR_METHOD[1]
+        payment_info = update_payment(index)
+        if (payment_info[0] == 'bank'):
+            bank_info = payment_info[1]
+        elif (payment_info[0] == 'credit'):
+            cc_info = payment_info[1]
+        elif (payment_info[0] == 'debit'):
+            db_info = payment_info[1]
 
-        print(f'Account: {account} Barcode: {barcode} CUR_METH: {CUR_METHOD[0]}\n\n')
+        print(f'Account: {account} Barcode: {barcode} Payment Method: {payment_info[0]}\n\n')
     driver = get_driver()
-    driver.get('https://revenue.savannahga.gov/revwebpayub/default.aspx')
-
-    # Enter Account Number and Barcode
-    driver.find_element(By.ID, value ='objWP_epayment_ESearchManager1_Web_CO_SearchPanel1_txt_GFD0').send_keys(account)
-    driver.find_element(By.ID, value ='objWP_epayment_ESearchManager1_Web_CO_SearchPanel1_txt_GFD1').send_keys(barcode)
-    driver.find_element(By.XPATH, value ='//*[@id="objWP_epayment_ESearchManager1_Web_CO_SearchPanel1_btnGo"]').click()
- 
-    # Check for invalid numbers
-    if (driver.find_elements(By.XPATH, value ='//*[@id="objWP_epayment_ESearchManager1_vdsSummary"]/ul/li')):
-        driver.execute_script('alert(\'Barcode is incorrect. Exiting...\');')
-        print('Incorrect barcode provided. Exiting...')
-        sleep(10)
-        return
-    elif (driver.find_elements(By.XPATH, value ='//*[@id="objWP_epayment_ESearchManager1_Web_CO_SearchPanel1_lblNoResult"]')):
-        driver.execute_script('alert(\'No results found, please check account number and barcode are correct & run again upon account number/barcode correction. Exiting...\');')
-        print('No results found, please check account number and barcode are correct. Exiting...')
-        sleep(15)
-        return
-    
-    # Continue, if correct values provided
-    print(f'Account: {account} with barcode: {barcode} found.\n')
-    sleep(4)
-    driver.find_element(By.XPATH, value ='/html/body/form/table/tbody/tr[2]/td[2]/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[3]/td/table/tbody/tr[5]/td/input[2]').click()
-
-    # Check for outstanding balance, return if none
     try:
-        if (driver.find_element(By.XPATH, value ='//*[@id="ctl02_grdAmount_ctl01_lblEmptyGrid"]').get_attribute('innerHTML') == 'No Outstanding Balance Found.'):
-            driver.execute_script(f'alert(\'No outstanding balance found for account {account}, barcode {barcode}. Exiting browser...\');')
-            print(f'No outstanding balance found for account {account} and {barcode}. Exiting...')
+        driver.get('https://revenue.savannahga.gov/revwebpayub/default.aspx')
+
+        # Enter Account Number and Barcode
+        driver.find_element(By.ID, value ='objWP_epayment_ESearchManager1_Web_CO_SearchPanel1_txt_GFD0').send_keys(account)
+        driver.find_element(By.ID, value ='objWP_epayment_ESearchManager1_Web_CO_SearchPanel1_txt_GFD1').send_keys(barcode)
+        driver.find_element(By.XPATH, value ='//*[@id="objWP_epayment_ESearchManager1_Web_CO_SearchPanel1_btnGo"]').click()
+    
+        # Check for invalid numbers
+        if (driver.find_elements(By.XPATH, value ='//*[@id="objWP_epayment_ESearchManager1_vdsSummary"]/ul/li')):
+            driver.execute_script('alert(\'Barcode is incorrect. Exiting...\');')
+            print('Incorrect barcode provided. Exiting...')
             sleep(10)
+            driver.quit()
             return
-    except NoSuchElementException:
-        print('An outstanding balance exists... Continuing...')
-    sleep(3)
+        elif (driver.find_elements(By.XPATH, value ='//*[@id="objWP_epayment_ESearchManager1_Web_CO_SearchPanel1_lblNoResult"]')):
+            driver.execute_script('alert(\'No results found, please check account number and barcode are correct & run again upon account number/barcode correction. Exiting...\');')
+            print('No results found, please check account number and barcode are correct. Exiting...')
+            sleep(15)
+            driver.quit*()
+            return
+        
+        # Continue, if correct values provided
+        print(f'Account: {account} with barcode: {barcode} found.\n')
+        sleep(4)
+        driver.find_element(By.XPATH, value ='/html/body/form/table/tbody/tr[2]/td[2]/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[3]/td/table/tbody/tr[5]/td/input[2]').click()
 
-    try:
-        amount = driver.find_element(By.XPATH, value ='/html/body/form/table/tbody/tr[2]/td[2]/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr[4]/td[2]/div/table/tbody/tr[2]/td[2]/div/table/tbody/tr[3]/td[2]/table/tbody/tr/td/span').text
-        print(f'\n{"-"*24}\nAccount:\t{account}\nBarcode:\t{barcode}\nAmount due:\t{amount}\n{"-"*24}\n')
-    except: pass
-
-    # Next Step Page
-    driver.find_element(By.XPATH, value='//*[@id="ctl02_hlinkNextStep"]').click()
-    driver.find_element(By.XPATH, value='//*[@id="ctl02_hlinkNextStep"]').click()
-    sleep(3)
-
-    # Billing Address/Information Page
-    driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtFirstName"]').send_keys(PAYOR_INFO['FirstName'])
-    driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtLastName"]').send_keys(PAYOR_INFO['LastName'])
-    driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtCivic"]').send_keys(PAYOR_INFO['HouseNumber'])
-    driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtEmail"]').send_keys(PAYOR_INFO['Email'])
-    driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtStreet"]').send_keys(PAYOR_INFO['Street'])
-    driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtCity"]').send_keys(PAYOR_INFO['City'])
-    Select(driver.find_element(By.ID, value='ctl02_ddlState')).select_by_visible_text(PAYOR_INFO['State'])
-    driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtZipCode"]').send_keys(PAYOR_INFO['Zip'])
-    driver.find_element(By.XPATH, value ='//*[@id="ctl02_hlinkNextStep"]').click()
-    driver.find_element(By.XPATH, value ='//*[@id="main-container"]/form/div/div[2]/div/input').click()
-    sleep(5)
-
-    # Payment Page
-    driver.find_element(By.XPATH, value ='//*[@id="customer.dayPhone.formattedText"]').send_keys(PAYOR_INFO['Phone'])
-    if HANDLE_PAYMENT == True:
-        if (CUR_METHOD[0] == 'bank'):
-            pay_with_bank(driver, BANK)
-        elif (CUR_METHOD[0] == 'credit'):
-            pay_with_credit(driver, CC_CARD)
-        elif (CUR_METHOD[0] == 'debit'):
-            pay_with_debit(driver, DB_CARD)
+        # Check for outstanding balance, return if none
+        try:
+            if (driver.find_element(By.XPATH, value ='//*[@id="ctl02_grdAmount_ctl01_lblEmptyGrid"]').get_attribute('innerHTML') == 'No Outstanding Balance Found.'):
+                driver.execute_script(f'alert(\'No outstanding balance found for account {account}, barcode {barcode}. Exiting browser...\');')
+                print(f'No outstanding balance found for account {account} and {barcode}. Exiting...')
+                sleep(10)
+                driver.quit()
+                return
+        except NoSuchElementException:
+            print('An outstanding balance exists... Continuing...')
         sleep(3)
-    else:
-        driver.execute_script("alert('Payment information must be manually entered from this point. Handle Payment variable was assigned to False. Browser will close in 10 minutes.');")
-        sleep(600)
-        return
-    
-    # Submit Button
-    driver.find_element(By.XPATH, value ='//*[@id="main-container"]/form/div[2]/div[2]/div/input[1]').click()
 
-    if FULLY_AUTOMATED:
-        # Agree to terms and conditions & submit payment, if fully automated
+        try:
+            amount = driver.find_element(By.XPATH, value ='/html/body/form/table/tbody/tr[2]/td[2]/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr[4]/td[2]/div/table/tbody/tr[2]/td[2]/div/table/tbody/tr[3]/td[2]/table/tbody/tr/td/span').text
+            print(f'\n{"-"*24}\nAccount:\t{account}\nBarcode:\t{barcode}\nAmount due:\t{amount}\n{"-"*24}\n')
+        except: pass
+
+        # Next Step Page
+        driver.find_element(By.XPATH, value='//*[@id="ctl02_hlinkNextStep"]').click()
+        driver.find_element(By.XPATH, value='//*[@id="ctl02_hlinkNextStep"]').click()
+        sleep(3)
+
+        # Billing Address/Information Page
+        driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtFirstName"]').send_keys(PAYOR_INFO['FirstName'])
+        driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtLastName"]').send_keys(PAYOR_INFO['LastName'])
+        driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtCivic"]').send_keys(PAYOR_INFO['HouseNumber'])
+        driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtEmail"]').send_keys(PAYOR_INFO['Email'])
+        driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtStreet"]').send_keys(PAYOR_INFO['Street'])
+        driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtCity"]').send_keys(PAYOR_INFO['City'])
+        Select(driver.find_element(By.ID, value='ctl02_ddlState')).select_by_visible_text(PAYOR_INFO['State'])
+        driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtZipCode"]').send_keys(PAYOR_INFO['Zip'])
+        driver.find_element(By.XPATH, value ='//*[@id="ctl02_hlinkNextStep"]').click()
+        driver.find_element(By.XPATH, value ='//*[@id="main-container"]/form/div/div[2]/div/input').click()
         sleep(5)
-        driver.find_element(By.XPATH, value ='//*[@id="main-container"]/form/div/div/div[6]/div/div/label/span').click()
-        driver.find_element(By.XPATH, value ='//*[@id="make-payment-btn"]').click()
-    else:
-        driver.execute_script(f"alert('{account}:{PAYMENT_METHOD[index].split(':')[1]} Fully Automated variable is set to False. You must manually submit your payment. You have 5 minutes before the browser closes.');")
-        sleep(300)
+
+        # Payment Page
+        driver.find_element(By.XPATH, value ='//*[@id="customer.dayPhone.formattedText"]').send_keys(PAYOR_INFO['Phone'])
+        if HANDLE_PAYMENT == True:
+            if (payment_info[0] == 'bank'):
+                pay_with_bank(driver, bank_info)
+            elif (payment_info[0] == 'credit'):
+                pay_with_credit(driver, cc_info)
+            elif (payment_info[0] == 'debit'):
+                pay_with_debit(driver, db_info)
+            sleep(3)
+        else:
+            driver.execute_script("alert('Payment information must be manually entered from this point. Handle Payment variable was assigned to False. Browser will close in 10 minutes.');")
+            sleep(600)
+            driver.quit()
+            return
+        
+        # Submit Button
+        driver.find_element(By.XPATH, value ='//*[@id="main-container"]/form/div[2]/div[2]/div/input[1]').click()
+
+        if FULLY_AUTOMATED:
+            # Agree to terms and conditions & submit payment, if fully automated
+            sleep(5)
+            driver.find_element(By.XPATH, value ='//*[@id="main-container"]/form/div/div/div[6]/div/div/label/span').click()
+            driver.find_element(By.XPATH, value ='//*[@id="make-payment-btn"]').click()
+            sleep(10)
+            driver.save_screenshot(f'./{account}_{barcode}.png')
+            print(f'Payment submitted for account {account} and barcode {barcode}. Exiting...')
+        else:
+            driver.execute_script(f"alert('{account}:{PAYMENT_METHOD[index].split(':')[1]} Fully Automated variable is set to False. You must manually submit your payment. You have 5 minutes before the browser closes.');")
+            sleep(300)
+    except:
+        print(f'An unexpected error occurred.\nBrowser will close in 1 minute.\n\n{traceback.format_exc()}')
+        sleep(60)
+    driver.quit()
 
 # Multi-Threading Method
 def multithread():
@@ -243,21 +254,15 @@ def multithread():
     for thread in threads:
         thread.join()
 
-# Main Program
+# Main Method
 def main():
-    try:
-        if MULTI_THREADING:
-            multithread()
-        else:
-            for i, (account, barcode) in enumerate(zip(ACCOUNTS, BARCODES)):
-                print(f'\n{"-"*24}\nAccount #{i}:\t{account}\tBarcode #{i}:\t{barcode}\n{"-"*24}\n')
-                automate_bill(account, barcode, i)
-                sleep(3)
-    except Exception:
-        print(f'An error occurred. Browser will close in 5 minutes.\n\n{traceback.format_exc()}')
-        sleep(300)
-        return
+    if MULTI_THREADING:
+        multithread()
+    else:
+        for i, (account, barcode) in enumerate(zip(ACCOUNTS, BARCODES)):
+            print(f'\n{"-"*40}\nAccount #{i}:\t{account}\tBarcode #{i}:\t{barcode}\n{"-"*40}\n')
+            automate_bill(account, barcode, i)
 
 if __name__ == '__main__':
     main()
-    print('Done! Thank you for using Prem-ium\'s Savannah, GA Water Bill Automation Script!')    
+    print('Done! Thank you for using Prem-ium\'s Savannah, GA Water Bill Automation Script!')
