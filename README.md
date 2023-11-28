@@ -1,6 +1,6 @@
 <h1 align="center">🏤 Savannah, GA Utility Bill Pay Automation 🤖 </h1>
 
-<p align="center">A Selenium-based Python script that simplifies utility bill payments for homeowners, landlords, & business owners in Savannah.</p>
+<p align="center">A Selenium-based Python script that simplifies water utility bill payments for homeowners, landlords, & business owners in Savannah, GA USA.</p>
 
 <p align="right"> 
         <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54"/><img src="https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white"/><a href="https://github.com/sponsors/Prem-ium" target="_blank">
@@ -49,24 +49,21 @@ To run this project, you will need to add the following environment variables to
 
 It is important to note that these variables should be replaced with real values before the application is run in order for it to function properly.
 
-## Donations
+# Donations
 
-I've been working on this project for a few months now, and I'm really happy with how it's turned out. 
-If you would like to show your appreciation for my work, I have set up two methods of sending in a donation: 
 
-<a href="https://github.com/sponsors/Prem-ium">Github Sponsors</a>, the ideal donation method, to make donations with no fees!
-<a href="https://github.com/sponsors/Prem-ium" target="_blank">
-        <img src="https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA" alt="GitHub Sponsor" img width="25%">
-</a>
+If you appreciate my work and would like to show your support, there are two convenient ways to make a donation:
 
-Otherwise, <a href="https://www.buymeacoffee.com/prem.ium">Buy-Me-Coffee</a> can be used to place donations as well. 
-<a href="https://www.buymeacoffee.com/prem.ium" target="_blank">
-        <img src="https://raw.githubusercontent.com/Prem-ium/youtube-analytics-bot/main/output-examples/media/coffee-logo.png" alt="Buy Me A Coffee" img width="25%">
-</a>
+1. **GitHub Sponsors**
+   - [Donate via GitHub Sponsors](https://github.com/sponsors/Prem-ium)
+   - This is the preferred donation method as you can place donations with no transaction fees & possibily receive perks for your donation.
+   - [![GitHub Sponsor](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/Prem-ium)
 
-I extend my heartfelt gratitude to all those who have already contributed. 
-Thank you for your support!
+2. **Buy Me A Coffee**
+   - [Donate via Buy Me A Coffee](https://www.buymeacoffee.com/prem.ium)
+   - [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://www.buymeacoffee.com/prem.ium)
 
+Your generous donations will go a long way in helping me cover the expenses associated with developing new features and promoting the project to a wider audience. I extend my heartfelt gratitude to all those who have already contributed. Thank you for your support!
 ## FAQ
 
 #### How can this repository help Savannah Georgia property owners pay utility bills?
