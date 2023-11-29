@@ -228,7 +228,7 @@ def automate_bill(account, barcode, index):
             driver.find_element(By.XPATH, value ='//*[@id="main-container"]/form/div/div/div[6]/div/div/label/span').click()
             driver.find_element(By.XPATH, value ='//*[@id="make-payment-btn"]').click()
             sleep(10)
-            driver.save_screenshot(f'./{account}_{barcode}.png')
+            driver.save_screenshot(f'.receipts/{account}_{barcode}.png')
             print(f'Payment submitted for account {account} and barcode {barcode}. Exiting...')
         else:
             driver.execute_script(f"alert('{account}:{PAYMENT_METHOD[index].split(':')[1]} Fully Automated variable is set to False. You must manually submit your payment. You have 5 minutes before the browser closes.');")
