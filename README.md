@@ -83,3 +83,21 @@ Please be careful when storing financial information such as card or bank detail
 [Use Privacy.com to secure your payments. ](https://privacy.com/join/G25UX)
 
 Privacy will allow you to pause and unpause your card at any time, allowing you to securely ensure your financial safety in the event of a breach.
+
+## Example Output
+```
+Account: 07XXX0 Barcode: 1XXX00 Payment Method: Bank
+
+
+Account: 07XXX0 with barcode: 1XXX00 found.
+
+An outstanding balance exists... Continuing...
+
+------------------------
+Account:	07XXX0
+Barcode:	1XXX00
+Amount due:	$126.26
+------------------------
+
+Done! Thank you for using Prem-ium's Savannah, GA Water Bill Automation Script!
+```
