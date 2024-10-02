@@ -13,14 +13,12 @@ import os, json, traceback, threading
 
 from time                                       import sleep
 from dotenv                                     import load_dotenv
-from lib2to3.pgen2                              import driver
 
 from webdriver_manager.chrome                   import ChromeDriverManager
 from selenium.webdriver.chrome.service          import Service
 from selenium                                   import webdriver
 from selenium.webdriver.common.by               import By
 from selenium.webdriver.support.ui              import Select
-from selenium.webdriver.support                 import expected_conditions as EC
 from selenium.common.exceptions                 import (NoSuchElementException)
 
 # Import .env variables
@@ -157,7 +155,7 @@ def automate_bill(account, barcode, index):
             driver.quit()
             return
         elif (driver.find_elements(By.XPATH, value ='//*[@id="objWP_epayment_ESearchManager1_Web_CO_SearchPanel1_lblNoResult"]')):
-            driver.execute_script('alert(\'No results found, please check account number and barcode are correct & run again upon account number/barcode correction. Exiting...\');')
+            driver.execute_script('alert("No results found.\\nCheck account number and barcode are correct & run again upon account number/barcode correction.\\nExiting...");')
             print('No results found, please check account number and barcode are correct. Exiting...')
             sleep(15)
             driver.quit*()
@@ -171,7 +169,7 @@ def automate_bill(account, barcode, index):
         # Check for outstanding balance, return if none
         try:
             if (driver.find_element(By.XPATH, value ='//*[@id="ctl02_grdAmount_ctl01_lblEmptyGrid"]').get_attribute('innerHTML') == 'No Outstanding Balance Found.'):
-                driver.execute_script(f'alert(\'No outstanding balance found for account {account}, barcode {barcode}. Exiting browser...\');')
+                driver.execute_script(f'alert("No outstanding balance found for:\\nAccount:\\t{account}\\nBarcode:\\t{barcode}\\nExiting browser...");')
                 print(f'No outstanding balance found for account {account} and {barcode}. Exiting...')
                 sleep(10)
                 driver.quit()
@@ -214,7 +212,7 @@ def automate_bill(account, barcode, index):
                 pay_with_debit(driver, db_info)
             sleep(3)
         else:
-            driver.execute_script("alert('Payment information must be manually entered from this point. Handle Payment variable was assigned to False. Browser will close in 10 minutes.');")
+            driver.execute_script("alert('Payment information must be manually entered from this point.\\nHandle Payment variable was assigned to False.\\n Browser will close in 10 minutes.');")
             sleep(600)
             driver.quit()
             return
@@ -265,4 +263,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    print('Done! Thank you for using Prem-ium\'s Savannah, GA Water Bill Automation Script!')
+    print(f"Done!\nThank you for using Prem-ium's Savannah, GA Water Bill Automation Script!\nIf you liked this project, please consider donating/sponsoring to support more projects like it:\t https://github.com/sponsors/Prem-ium")
