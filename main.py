@@ -180,7 +180,7 @@ def automate_bill(account, barcode, index):
 
         try:
             amount = driver.find_element(By.XPATH, value ='/html/body/form/table/tbody/tr[2]/td[2]/table[2]/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr[4]/td[2]/div/table/tbody/tr[2]/td[2]/div/table/tbody/tr[3]/td[2]/table/tbody/tr/td/span').text
-            print(f'\n{"-"*24}\nAccount:\t{account}\nBarcode:\t{barcode}\nAmount due:\t{amount}\n{"-"*24}\n')
+            print(f'\n{"-"*45}\nAccount:\t{account}\nBarcode:\t{barcode}\nAmount due:\t{amount}\n{"-"*45}\n')
         except: pass
 
         # Next Step Page
@@ -230,6 +230,7 @@ def automate_bill(account, barcode, index):
             print(f'Payment submitted for account {account} and barcode {barcode}. Exiting...')
         else:
             driver.execute_script(f"alert('{account}:{PAYMENT_METHOD[index].split(':')[1]} Fully Automated variable is set to False. You must manually submit your payment. You have 5 minutes before the browser closes.');")
+            print(f"{account}:{PAYMENT_METHOD[index].split(':')[1]} Fully Automated variable is set to False. You must manually submit your payment. You have 5 minutes before the browser closes.")
             sleep(300)
     except:
         print(f'An unexpected error occurred.\nBrowser will close in 1 minute.\n\n{traceback.format_exc()}')
@@ -238,7 +239,7 @@ def automate_bill(account, barcode, index):
 
 # Multi-Threading Method
 def multithread():
-    print('Multi-threading enabled. Running automation in parallel...\n')
+    print(f'Multi-threading enabled. Running automation in parallel...\n{'-'*50}')
     threads = []
 
     for i, (account, barcode) in enumerate(zip(ACCOUNTS, BARCODES)):
@@ -262,5 +263,16 @@ def main():
             automate_bill(account, barcode, i)
 
 if __name__ == '__main__':
+    message = """
+Use "FULLY_AUTOMATED" at your own risk. Storing financial information in plain text is not recommended.
+If you insist on using that feature, please consider using Privacy to protect yourself from theft.
+
+Privacy is a service that allows you to create virtual cards that are locked to a specific merchant and can be closed at any time.
+Sign up using the following link to help yourself stay safe & secure -- you will receive $5 after making a purchase:
+
+https://privacy.com/join/G25UX
+    """
+    print(f"{'-'*50}\n{message}\n{'-'*50}")
+
     main()
     print(f"Done!\nThank you for using Prem-ium's Savannah, GA Water Bill Automation Script!\nIf you liked this project, please consider donating/sponsoring to support more projects like it:\t https://github.com/sponsors/Prem-ium")

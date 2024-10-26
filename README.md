@@ -86,18 +86,30 @@ Privacy will allow you to pause and unpause your card at any time, allowing you 
 
 ## Example Output
 ```
-Account: 07XXX0 Barcode: 1XXX00 Payment Method: Bank
+--------------------------------------------------
+Use "FULLY_AUTOMATED" at your own risk. Storing financial information in plain text is not recommended.
+If you insist on using that feature, please consider using Privacy to protect yourself from theft.
+
+Privacy is a service that allows you to create virtual cards that are locked to a specific merchant and can be closed at any time.
+Sign up using the following link to help yourself stay safe & secure -- you will receive $5 after making a purchase:
+
+https://privacy.com/join/G25UX
+--------------------------------------------------
+Multi-threading enabled. Running automation in parallel...
+--------------------------------------------------
+Account: 07XXX0 Barcode: 12XX00 Payment Method: bank
 
 
-Account: 07XXX0 with barcode: 1XXX00 found.
+Account: 07XXX0 with barcode: 12XX00 found.
 
 An outstanding balance exists... Continuing...
 
 ------------------------
 Account:	07XXX0
-Barcode:	1XXX00
-Amount due:	$126.26
+Barcode:	12XX00
+Amount due:	$125.21
 ------------------------
 
-Done! Thank you for using Prem-ium's Savannah, GA Water Bill Automation Script!
+Done!
+Thank you for using Prem-ium's Savannah, GA Water Bill Automation Script!
 ```
