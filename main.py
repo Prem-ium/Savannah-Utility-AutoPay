@@ -57,7 +57,7 @@ def get_driver():
     chrome_options.add_argument("--start-minimized")
     try:
         driver = webdriver.Chrome(
-                service=Service(ChromeDriverManager(cache_valid_range=30).install()),
+                service=Service(ChromeDriverManager().install()),
                 options=chrome_options)
     except:
         driver = webdriver.Chrome()
@@ -239,7 +239,7 @@ def automate_bill(account, barcode, index):
 
 # Multi-Threading Method
 def multithread():
-    print(f'Multi-threading enabled. Running automation in parallel...\n{'-'*50}')
+    print(f'Multi-threading enabled. Running automation in parallel...\n{"-"*50}')
     threads = []
 
     for i, (account, barcode) in enumerate(zip(ACCOUNTS, BARCODES)):
