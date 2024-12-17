@@ -47,11 +47,19 @@ if HANDLE_PAYMENT:
     if len(PAYMENT_METHOD) != len(ACCOUNTS):
         raise Exception("PAYMENT_METHOD and ACCOUNT_NUMBERS are not the same length. Please make sure they are and try again.")
 
-MULTI_THREADING = True if os.environ.get('MULTI_THREADING', 'False').lower() == 'true' else False
-FULLY_AUTOMATED = True if os.environ.get('FULLY_AUTOMATED', 'False').lower() == 'true' else False
-
 # Methods
 def get_driver():
+    """
+    Initialize and configure a Selenium Chrome WebDriver instance.
+
+    This method sets up a Chrome WebDriver with specific options, such as:
+    - Disabling automation detection (to avoid websites detecting Selenium usage).
+    - Starting the browser in a minimized window.
+
+    Returns:    selenium.webdriver.Chrome:  An instance of the configured Chrome WebDriver.
+    
+    Raises:     Exception:                  If there is an issue initializing the WebDriver."""
+
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_argument("--start-minimized")
@@ -64,6 +72,17 @@ def get_driver():
     return driver
 
 def update_payment(index):
+    """
+    Retrieve payment details from environment variables based on the payment method.
+
+    Args:
+        index (int): Index of the payment method in PAYMENT_METHOD.
+
+    Returns:
+        tuple: (payment_method (str), payment_info (dict)) containing:
+            - payment_method: Type of payment ("bank", "credit", "debit").
+            - payment_info: Payment details parsed from environment variables."""
+    
     name = PAYMENT_METHOD[index].split(':')[1]
     if 'bank' in PAYMENT_METHOD[index]:
         bank_info = os.environ.get(name)
@@ -81,8 +100,19 @@ def update_payment(index):
         payment_method = "debit"
         return payment_method, db_info
 
-# Payment Method Functions
+# Credit/Debit Card Functions
+"""
+    CC_CARD/DB_CARD (dict): A dictionary containing card details:
+        - 'number' (str): Credit card number.
+        - 'ccv' (str): Credit card CVV.
+        - 'expirationMonth' (str): Card expiration month (MM).
+        - 'expirationYear' (str): Card expiration year (YYYY).
+        - 'cardholder' (str): Cardholder's full name.
+"""
 def pay_with_credit(driver, CC_CARD):
+    """
+        Fill in credit card payment details on the payment page using the provided WebDriver.
+    """
     driver.find_element(By.XPATH, value ='//*[@id="category-CC"]/div[1]/div/label/span').click()
     sleep(2)
     driver.find_element(By.XPATH, value ='//*[@id="ccAccountNumber"]').send_keys(CC_CARD['number'])
@@ -92,6 +122,9 @@ def pay_with_credit(driver, CC_CARD):
     driver.find_element(By.XPATH, value ='//*[@id="ccCardHolderName"]').send_keys(CC_CARD['cardholder'])
 
 def pay_with_debit(driver, DB_CARD):
+    """
+        Fill in debit card payment details on the payment page using the provided WebDriver.
+    """
     driver.find_element(By.XPATH, value ='//*[@id="category-DC"]/div[1]/div/label/span').click()
     sleep(2)
     driver.find_element(By.ID, value ='dcAccountNumber').send_keys(DB_CARD['number'])
@@ -101,6 +134,9 @@ def pay_with_debit(driver, DB_CARD):
     driver.find_element(By.ID, value ='dcCardHolderName').send_keys(DB_CARD['cardholder'])
 
 def pay_with_bank(driver, BANK):
+    """
+        Fill in bank account details on the payment page using the provided WebDriver.
+    """
     try:
         driver.find_element(By.XPATH, value ='/html/body/div[6]/div[1]/form/div[2]/div[2]/div[6]/fieldset/div[3]/div[1]/div/label/span').click()
     except:
@@ -128,6 +164,21 @@ def pay_with_bank(driver, BANK):
     driver.find_element(By.XPATH, value='//*[@id="ddAccountNumber2"]').send_keys(BANK['Account'])
 
 def automate_bill(account, barcode, index):
+    """
+    Automates bill retrieval and payment for a given account.
+
+    Args:
+        account (str): Account number to identify the bill.
+        barcode (str): Barcode associated with the account.
+        index (int): Index of the selected payment method.
+
+    Workflow:
+        - Navigates to the payment portal.
+        - Inputs account and barcode to retrieve billing information.
+        - Verifies outstanding balance and handles payment using bank, credit, or debit info.
+        - Supports full or partial automation based on configuration.
+    """
+
     if HANDLE_PAYMENT:
         payment_info = update_payment(index)
         if (payment_info[0] == 'bank'):
@@ -170,7 +221,7 @@ def automate_bill(account, barcode, index):
         try:
             if (driver.find_element(By.XPATH, value ='//*[@id="ctl02_grdAmount_ctl01_lblEmptyGrid"]').get_attribute('innerHTML') == 'No Outstanding Balance Found.'):
                 driver.execute_script(f'alert("No outstanding balance found for:\\nAccount:\\t{account}\\nBarcode:\\t{barcode}\\nExiting browser...");')
-                print(f'No outstanding balance found for account {account} and {barcode}. Exiting...')
+                print(f'{"-"*45}\nNo outstanding balance found for account {account} and {barcode}. Exiting...\n{"-"*45}')
                 sleep(10)
                 driver.quit()
                 return
@@ -219,8 +270,8 @@ def automate_bill(account, barcode, index):
         
         # Submit Button
         driver.find_element(By.XPATH, value ='//*[@id="main-container"]/form/div[2]/div[2]/div/input[1]').click()
-
-        if FULLY_AUTOMATED:
+        fully_automate = True if os.environ.get('FULLY_AUTOMATED', 'False').lower() == 'true' else False
+        if fully_automate:
             # Agree to terms and conditions & submit payment, if fully automated
             sleep(5)
             driver.find_element(By.XPATH, value ='//*[@id="main-container"]/form/div/div/div[6]/div/div/label/span').click()
@@ -237,25 +288,27 @@ def automate_bill(account, barcode, index):
         sleep(60)
     driver.quit()
 
-# Multi-Threading Method
 def multithread():
+    """
+    Executes bill automation in parallel using multi-threading.
+    """
     print(f'Multi-threading enabled. Running automation in parallel...\n{"-"*50}')
-    threads = []
-
-    for i, (account, barcode) in enumerate(zip(ACCOUNTS, BARCODES)):
-        args = (account, barcode, i) if HANDLE_PAYMENT else (account, barcode)
-        thread = threading.Thread(target=automate_bill, args=args)
-        threads.append(thread)
-
+    
+    threads = [
+        threading.Thread(target=automate_bill, args=(account, barcode, i) if HANDLE_PAYMENT else (account, barcode))
+        for i, (account, barcode) in enumerate(zip(ACCOUNTS, BARCODES))
+    ]
+    
     for thread in threads:
         thread.start()
-
+        
     for thread in threads:
         thread.join()
 
 # Main Method
 def main():
-    if MULTI_THREADING:
+    use_multithreading = True if os.environ.get('MULTI_THREADING', 'False').lower() == 'true' else False
+    if use_multithreading:
         multithread()
     else:
         for i, (account, barcode) in enumerate(zip(ACCOUNTS, BARCODES)):
