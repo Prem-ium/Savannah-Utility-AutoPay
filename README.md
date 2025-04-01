@@ -134,7 +134,7 @@ If you find this project helpful, you can show your support in the following way
 
 Please exercise caution when storing sensitive financial information such as bank or card details in this script. Saving this information in plain text files (e.g., `.env`) is not secure and could expose you to theft.  
 
-We highly recommend using [Privacy.com](https://privacy.com/join/G25UX) to generate virtual cards for added security. By doing so, you can control, pause, or close your cards anytime.
+We highly recommend using [Privacy.com](https://app.privacy.com/join/G25UX) to generate virtual cards for added security. By doing so, you can control, pause, or close your cards anytime.
 
 ---
 

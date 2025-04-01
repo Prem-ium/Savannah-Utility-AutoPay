@@ -1,7 +1,7 @@
 # Use "FULLY_AUTOMATED" at your own risk. Storing financial information in plain text is not recommended. 
 # If you insist on using that feature, please consider using Privacy to protect yourself from theft.
 # Privacy is a service that allows you to create virtual cards that are locked to a specific merchant, and can be closed at any time.
-# Sign up using (https://privacy.com/join/G25UX) link to help yourself stay safe & secure-- you will receive $5 after making a purchase. 
+# Sign up using (https://app.privacy.com/join/G25UX) link to help yourself stay safe & secure-- you will receive $5 after making a purchase. 
 
 # MIT License
 # Copyright (c) 2023 Prem-ium
@@ -323,7 +323,7 @@ If you insist on using that feature, please consider using Privacy to protect yo
 Privacy is a service that allows you to create virtual cards that are locked to a specific merchant and can be closed at any time.
 Sign up using the following link to help yourself stay safe & secure -- you will receive $5 after making a purchase:
 
-https://privacy.com/join/G25UX
+https://app.privacy.com/join/G25UX
     """
     print(f"{'-'*50}\n{message}\n{'-'*50}")
 
