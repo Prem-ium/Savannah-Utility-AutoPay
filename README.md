@@ -81,7 +81,7 @@ Use "FULLY_AUTOMATED" at your own risk. Storing financial information in plain t
 If you insist on using that feature, please consider using Privacy to protect yourself from theft.
 
 Privacy allows you to create virtual cards locked to specific merchants. Sign up here for $5:
-https://privacy.com/join/G25UX
+https://app.privacy.com/join/G25UX
 --------------------------------------------------
 Multi-threading enabled. Running automation in parallel...
 --------------------------------------------------
