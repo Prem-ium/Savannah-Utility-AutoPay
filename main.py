@@ -249,6 +249,7 @@ def automate_bill(account, barcode, index):
         Select(driver.find_element(By.ID, value='ctl02_ddlState')).select_by_visible_text(PAYOR_INFO['State'])
         driver.find_element(By.XPATH, value ='//*[@id="ctl02_txtZipCode"]').send_keys(PAYOR_INFO['Zip'])
         driver.find_element(By.XPATH, value ='//*[@id="ctl02_hlinkNextStep"]').click()
+        sleep(3)
         driver.find_element(By.XPATH, value ='//*[@id="main-container"]/form/div/div[2]/div/input').click()
         sleep(5)
 
